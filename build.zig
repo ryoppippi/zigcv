@@ -56,7 +56,6 @@ pub fn build(b: *std.build.Builder) void {
         exe.setBuildMode(mode);
         exe.setTarget(target);
         exe.install();
-        exe.use_stage1 = ex.fstage1;
 
         zigcv.link(exe);
         zigcv.addAsPackage(exe);
@@ -103,5 +102,4 @@ const Program = struct {
     name: []const u8,
     path: []const u8,
     desc: []const u8,
-    fstage1: bool = false,
 };
