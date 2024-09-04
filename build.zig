@@ -1,7 +1,9 @@
 const std = @import("std");
+const Build = std.Build;
 const LazyPath = std.build.LazyPath;
 const zigcv = @import("libs.zig");
-pub fn build(b: *std.build.Builder) void {
+
+pub fn build(b: *Build) void {
     const target = b.standardTargetOptions(.{});
     const mode = b.standardOptimizeOption(.{});
 
@@ -53,7 +55,7 @@ pub fn build(b: *std.build.Builder) void {
     for (examples) |ex| {
         const exe = b.addExecutable(.{
             .name = ex.name,
-            .root_source_file = .{ .path = ex.path },
+            .root_source_file = b.path(ex.path),
             .target = target,
             .optimize = mode,
         });
@@ -76,7 +78,7 @@ pub fn build(b: *std.build.Builder) void {
         examples_step.dependOn(artifact_step);
     }
 
-    var tmp_dir = std.testing.tmpDir(.{});
+    // var tmp_dir = try std.fs.cwd().createTempDir(.{}, "zig-temp");
     defer tmp_dir.cleanup();
 
     const test_filter = b.option([]const u8, "test-filter", "Skip tests that do not match filter") orelse null;

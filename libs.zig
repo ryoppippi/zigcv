@@ -1,25 +1,29 @@
 const std = @import("std");
-const ArrayList = std.ArrayList;
-const LazyPath = std.build.LazyPath;
+const Build = std.Build;
+const Step = std.Build.Step;
+const Compile = Step.Compile;
+const LazyPath = Build.LazyPath;
 
-pub fn addAsPackage(exe: *std.Build.CompileStep) void {
+const ArrayList = std.ArrayList;
+
+pub fn addAsPackage(exe: *Compile) void {
     addAsPackageWithCustomName(exe, "zigcv");
 }
 
-pub fn addAsPackageWithCustomName(exe: *std.Build.CompileStep, name: []const u8) void {
+pub fn addAsPackageWithCustomName(exe: *Compile, name: []const u8) void {
     const owner = exe.step.owner;
-    var module = std.build.createModule(owner, .{
+    const module = std.build.createModule(owner, .{
         .source_file = std.Build.FileSource.relative("src/main.zig"),
         .dependencies = &.{},
     });
     exe.addModule(name, module);
 }
 
-pub fn link(b: *std.build.Builder, exe: *std.Build.CompileStep) void {
-    ensureSubmodules(exe);
+pub fn link(b: *Build, exe: *Compile) void {
+    ensureGit(b.allocator) catch return;
 
-    const target = exe.target;
-    const mode = exe.optimize;
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
     const builder = exe.step.owner;
 
     const go_src_files = .{
@@ -42,7 +46,7 @@ pub fn link(b: *std.build.Builder, exe: *std.Build.CompileStep) void {
     const cv = builder.addStaticLibrary(std.Build.StaticLibraryOptions{
         .name = "opencv",
         .target = target,
-        .optimize = mode,
+        .optimize = optimize,
     });
 
     inline for (go_src_files) |file| {
@@ -100,7 +104,8 @@ pub const contrib = struct {
     }
 
     pub fn link(b: *std.build.Builder, exe: *std.build.LibExeObjStep) void {
-        ensureSubmodules(exe);
+        ensureGit(b.allocator) catch return;
+        ensureSubmodules(b.allocator) catch return;
 
         const target = exe.target;
         const optimize = exe.optimize;
@@ -151,7 +156,7 @@ pub const cuda = struct {
     }
 
     pub fn link(b: *std.build.Builder, exe: *std.build.LibExeObjStep) void {
-        ensureSubmodules(exe);
+        ensureSubmodules(b.allocator) catch return;
 
         const target = exe.target;
         const mode = exe.build_mode;
@@ -190,12 +195,66 @@ pub const cuda = struct {
     }
 };
 
-var ensure_submodule: bool = false;
-fn ensureSubmodules(exe: *std.build.LibExeObjStep) void {
-    const b = exe.step.owner;
-    if (!ensure_submodule) {
-        exe.step.dependOn(&b.addSystemCommand(&.{ "git", "submodule", "update", "--init", "--recursive" }).step);
-        ensure_submodule = true;
+fn ensureGit(allocator: std.mem.Allocator) !void {
+    const printErrorMsg = (struct {
+        fn impl() void {
+            std.log.err("\n" ++
+                \\---------------------------------------------------------------------------
+                \\
+                \\'git version' failed. Is Git not installed?
+                \\
+                \\---------------------------------------------------------------------------
+                \\
+            , .{});
+        }
+    }).impl;
+    const argv = &[_][]const u8{ "git", "version" };
+    const result = std.process.Child.run(.{
+        .allocator = allocator,
+        .argv = argv,
+    }) catch { // e.g. FileNotFound
+        printErrorMsg();
+        return error.GitNotFound;
+    };
+    defer {
+        allocator.free(result.stderr);
+        allocator.free(result.stdout);
+    }
+    if (result.term.Exited != 0) {
+        printErrorMsg();
+        return error.GitNotFound;
+    }
+}
+
+fn ensureSubmodules(allocator: std.mem.Allocator) void {
+    const printErrorMsg = (struct {
+        fn impl() void {
+            std.log.err("\n" ++
+                \\---------------------------------------------------------------------------
+                \\
+                \\'git submodule update --init --recursive' failed. 
+                \\
+                \\---------------------------------------------------------------------------
+                \\
+            , .{});
+        }
+    }).impl;
+
+    const argv = &[_][]const u8{ "git", "submodule", "update", "--init", "--recursive" };
+    const result = std.process.Child.run(.{
+        .allocator = allocator,
+        .argv = argv,
+    }) catch {
+        printErrorMsg();
+        return error.GitSubmoduleUpdateFailed;
+    };
+    defer {
+        allocator.free(result.stderr);
+        allocator.free(result.stdout);
+    }
+    if (result.term.Exited != 0) {
+        printErrorMsg();
+        return error.GitSubmoduleUpdateFailed;
     }
 }
 
