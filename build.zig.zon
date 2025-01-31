@@ -1,0 +1,46 @@
+.{
+    .name = "zigcv",
+    // This is a [Semantic Version](https://semver.org/).
+    // In a future version of Zig it will be used for package deduplication.
+    .version = "0.1.0",
+
+    // This field is optional.
+    // This is currently advisory only; Zig does not yet do anything
+    // with this value.
+    //.minimum_zig_version = "0.11.0",
+
+    // This field is optional.
+    // Each dependency must either provide a `url` and `hash`, or a `path`.
+    // `zig build --fetch` can be used to fetch all dependencies of a package, recursively.
+    // Once all dependencies are fetched, `zig build` no longer requires
+    // internet connectivity.
+    .dependencies = .{
+        .gocv = .{
+            .url = "git+https://github.com/hybridgroup/gocv#v0.40.0",
+            .hash = "12209e6bc3b59b3d0abd300d0df04b7d8151c8d9d6edf8ea450e3d6589597f9c5d2c",
+        },
+        .opencv = .{
+            .url = "https://github.com/opencv/opencv#4.11.0",
+            .hash = "122020210f81d631695cde9340e357c7e05f617448c404f21fec505ef373f9601784",
+        },
+        .opencv_contrib = .{
+            .url = "https://github.com/opencv/opencv_contrib#4.11.0",
+            .hash = "1220bb9a6f65ce5f0f9b576ca028579231ab333509c9c6d9b865492e54abcfe8c460",
+        },
+    },
+    .paths = .{
+        // This makes *all* files, recursively, included in this package. It is generally
+        // "",
+        // better to explicitly list the files and directories instead, to insure that
+        // fetching from tarballs, file system paths, and version control all result
+        // in the same contents hash.
+        // For example...
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "logo",
+        "scripts",
+        "LICENSE",
+        "README.md",
+    },
+}

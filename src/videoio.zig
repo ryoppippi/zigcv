@@ -272,15 +272,13 @@ pub const VideoCapture = struct {
     }
 
     pub fn captureFile(self: *Self, uri: []const u8) !void {
-        const c_uri = @as([*]const u8, @ptrCast(uri));
-        if (!c.VideoCapture_Open(self.ptr, c_uri)) {
+        if (!c.VideoCapture_Open(self.ptr, @ptrCast(uri))) {
             return error.VideoCaptureOpenFileError;
         }
     }
 
     pub fn captureFileWithAPI(self: *Self, uri: []const u8, api_preference: API) !void {
-        const cURI = @as([*]const u8, @ptrCast(uri));
-        if (!c.VideoCapture_OpenWithAPI(self.ptr, cURI, @intFromEnum(api_preference))) {
+        if (!c.VideoCapture_OpenWithAPI(self.ptr, @ptrCast(uri), @intFromEnum(api_preference))) {
             return error.VideoCaptureOpenFileError;
         }
     }
@@ -411,18 +409,18 @@ pub const VideoWriter = struct {
     }
 };
 
-const testing = std.testing;
-const cache_dir = "./zig-cache/tmp/";
-const video_path = "libs/gocv/images/small.mp4";
+const video_path = "test/images/small.mp4";
 const imgcodecs = @import("imgcodecs.zig");
+var out_buffer: [std.fs.max_path_bytes]u8 = undefined;
+
 test "videoio VideoCapture captureFile" {
     var vc = try VideoCapture.init();
     defer vc.deinit();
     try vc.captureFile(video_path);
-    try testing.expectEqual(true, vc.isOpened());
+    try std.testing.expectEqual(true, vc.isOpened());
 
-    try testing.expectEqual(@as(f64, 560), vc.get(.frame_width));
-    try testing.expectEqual(@as(f64, 320), vc.get(.frame_height));
+    try std.testing.expectEqual(@as(f64, 560), vc.get(.frame_width));
+    try std.testing.expectEqual(@as(f64, 320), vc.get(.frame_height));
 
     vc.grab(10);
     vc.set(.brightness, 100);
@@ -431,7 +429,7 @@ test "videoio VideoCapture captureFile" {
     defer img.deinit();
 
     try vc.read(&img);
-    try testing.expectEqual(false, img.isEmpty());
+    try std.testing.expectEqual(false, img.isEmpty());
 }
 
 test "videoio VideoCapture captureFileWithAPI" {
@@ -439,36 +437,36 @@ test "videoio VideoCapture captureFileWithAPI" {
     defer vc.deinit();
     try vc.captureFileWithAPI(video_path, .any);
 
-    var backend = vc.get(.backend);
-    try testing.expect(@as(f64, @intFromEnum(VideoCapture.API.any)) != backend);
+    const backend = vc.get(.backend);
+    try std.testing.expect(@as(f64, @intFromEnum(VideoCapture.API.any)) != backend);
 }
 
 test "videoio VideoCapture captureFile invalid file" {
     var vc = try VideoCapture.init();
     defer vc.deinit();
-    var e = vc.captureFile("not-exist-path/" ++ video_path);
-    try testing.expectError(error.VideoCaptureOpenFileError, e);
+    const e = vc.captureFile("not-exist-path/" ++ video_path);
+    try std.testing.expectError(error.VideoCaptureOpenFileError, e);
 }
 
 test "videoio VideoCapture captureFileWithAPI invalid file" {
     var vc = try VideoCapture.init();
     defer vc.deinit();
-    var e = vc.captureFileWithAPI("not-exist-path/" ++ video_path, .any);
-    try testing.expectError(error.VideoCaptureOpenFileError, e);
+    const e = vc.captureFileWithAPI("not-exist-path/" ++ video_path, .any);
+    try std.testing.expectError(error.VideoCaptureOpenFileError, e);
 }
 
 test "videoio VideoCapture openDevice unknown error" {
     var vc = try VideoCapture.init();
     defer vc.deinit();
-    var e = vc.openDevice(std.math.maxInt(i32));
-    try testing.expectError(error.VideoCaptureOpenDeviceError, e);
+    const e = vc.openDevice(std.math.maxInt(i32));
+    try std.testing.expectError(error.VideoCaptureOpenDeviceError, e);
 }
 
 test "videoio VideoCapture openDeviceWithAPI unknown error" {
     var vc = try VideoCapture.init();
     defer vc.deinit();
-    var e = vc.openDeviceWithAPI(std.math.maxInt(i32), .any);
-    try testing.expectError(error.VideoCaptureOpenDeviceError, e);
+    const e = vc.openDeviceWithAPI(std.math.maxInt(i32), .any);
+    try std.testing.expectError(error.VideoCaptureOpenDeviceError, e);
 }
 
 test "videoio VideoCapture getCodecString" {
@@ -476,7 +474,7 @@ test "videoio VideoCapture getCodecString" {
     defer vc.deinit();
     try vc.captureFile(video_path);
     const res = vc.getCodecString();
-    try testing.expect(!std.mem.eql(u8, "", res));
+    try std.testing.expect(!std.mem.eql(u8, "", res));
 }
 
 test "videoio VideoCapture toCodec" {
@@ -485,27 +483,26 @@ test "videoio VideoCapture toCodec" {
     try vc.captureFile(video_path);
     const codec = vc.getCodecString();
     const r_codec = try vc.toCodec(codec);
-    try testing.expectEqual(vc.get(.fourcc), r_codec);
+    try std.testing.expectEqual(vc.get(.fourcc), r_codec);
 }
 
 test "videoio VideoCapture toCodec failed" {
     var vc = try VideoCapture.init();
     defer vc.deinit();
-    var e = vc.toCodec("123");
-    try testing.expectError(error.InvalidCodec, e);
+    const e = vc.toCodec("123");
+    try std.testing.expectError(error.InvalidCodec, e);
 }
 
 test "videoio VideoWriter" {
-    const write_filename = cache_dir ++ "test_write_video.avi";
-    var img = try imgcodecs.imRead("libs/gocv/images/face-detect.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face-detect.jpg", .color);
     defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+    try std.testing.expectEqual(false, img.isEmpty());
 
     var vw = try VideoWriter.init();
-    vw.open(write_filename, "MJPG", 25, img.cols(), img.rows(), true);
+    vw.open(".zig-cache/tmp/test_video_write.avi", "MJPG", 25, img.cols(), img.rows(), true);
     defer vw.deinit();
 
-    try testing.expectEqual(true, vw.isOpened());
+    try std.testing.expectEqual(true, vw.isOpened());
 
     try vw.write(&img);
 }

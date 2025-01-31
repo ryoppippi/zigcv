@@ -495,16 +495,16 @@ pub fn equalizeHist(src: Mat, dst: *Mat) void {
 /// For futher details, please see:
 /// https://docs.opencv.org/master/d6/dc7/group__imgproc__hist.html#ga6ca1876785483836f72a77ced8ea759a
 pub fn calcHist(mats: []Mat, chans: []i32, mask: Mat, hist: *Mat, sz: []i32, rng: []f32, acc: bool) !void {
-    var c_mat = try Mat.toCStructs(mats);
-    var c_chans = c.IntVector{
+    const c_mat = try Mat.toCStructs(mats);
+    const c_chans = c.IntVector{
         .val = &chans[0],
         .length = @as(i32, @intCast(chans.len)),
     };
-    var c_sz = c.IntVector{
+    const c_sz = c.IntVector{
         .val = @as([*]i32, @ptrCast(sz.ptr)),
         .length = @as(i32, @intCast(sz.len)),
     };
-    var c_rng = c.FloatVector{
+    const c_rng = c.FloatVector{
         .val = @as([*]f32, @ptrCast(rng.ptr)),
         .length = @as(i32, @intCast(rng.len)),
     };
@@ -520,12 +520,12 @@ pub fn compareHist(hist1: Mat, hist2: Mat, method: HistCompMethod) f64 {
 }
 
 pub fn calcBackProject(mats: []Mat, chans: []i32, hist: *Mat, backProject: Mat, rng: []f32, uniform: bool) !void {
-    var c_mats = try Mat.toCStructs(mats);
-    var c_chans = c.IntVector{
+    const c_mats = try Mat.toCStructs(mats);
+    const c_chans = c.IntVector{
         .val = &chans[0],
         .length = @as(i32, @intCast(chans.len)),
     };
-    var c_rng = c.FloatVector{
+    const c_rng = c.FloatVector{
         .val = @as([*]f32, @ptrCast(rng.ptr)),
         .length = @as(i32, @intCast(rng.len)),
     };
@@ -720,7 +720,7 @@ pub fn minEnclosingCircle(pts: PointVector) struct { point: Point2f, radius: f32
     var c_center: c.Point2f = undefined;
     var radius: f32 = undefined;
     c.MinEnclosingCircle(pts.toC(), @as([*]c.Point2f, @ptrCast(&c_center)), @as([*]f32, @ptrCast(&radius)));
-    var center: Point2f = Point2f.initFromC(c_center);
+    const center: Point2f = Point2f.initFromC(c_center);
     return .{ .point = center, .radius = radius };
 }
 
@@ -1136,7 +1136,7 @@ pub fn polylines(img: *Mat, points: PointsVector, is_closed: bool, color: Color,
 /// http://docs.opencv.org/master/d6/d6e/group__imgproc__draw.html#ga3d2abfcb995fd2db908c8288199dba82
 ///
 pub fn getTextSize(text: []const u8, font_face: HersheyFont, font_scale: f64, thickness: i32) Size {
-    var c_size = c.GetTextSize(@as([*]const u8, @ptrCast(text)), font_face.toNum(), font_scale, thickness);
+    const c_size = c.GetTextSize(@as([*]const u8, @ptrCast(text)), font_face.toNum(), font_scale, thickness);
     return Size.initFromC(c_size);
 }
 
@@ -1149,8 +1149,8 @@ pub fn getTextSize(text: []const u8, font_face: HersheyFont, font_scale: f64, th
 ///
 pub fn getTextSizeWithBaseline(text: []const u8, font_face: HersheyFont, font_scale: f64, thickness: i32) struct { size: Size, baseline: i32 } {
     var baseline: i32 = 0;
-    var c_size = c.GetTextSizeWithBaseline(@as([*]const u8, @ptrCast(text)), font_face.toNum(), font_scale, thickness, &baseline);
-    var size = Size.initFromC(c_size);
+    const c_size = c.GetTextSizeWithBaseline(@as([*]const u8, @ptrCast(text)), font_face.toNum(), font_scale, thickness, &baseline);
+    const size = Size.initFromC(c_size);
     return .{
         .size = size,
         .baseline = baseline,

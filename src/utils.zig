@@ -10,7 +10,7 @@ pub fn fromCStructsToArrayList(from_array: anytype, from_array_length: i32, comp
             const elem = blk: {
                 const elem = ToType.initFromC(from_array[i]);
                 break :blk switch (comptime @typeInfo(@TypeOf(elem))) {
-                    .ErrorUnion => try elem,
+                    .error_union => try elem,
                     else => elem,
                 };
             };
@@ -29,13 +29,13 @@ pub fn ensurePtrNotNull(ptr: anytype) !@TypeOf(ptr) {
 pub fn ensureFileExists(path: []const u8, allow_zero_byte: bool) !void {
     const stat = std.fs.cwd().statFile(path) catch |err| switch (err) {
         error.FileNotFound => {
-            std.debug.print("File not found: {s}\n", .{path});
+            // std.debug.print("File not found: {s}\n", .{path});
             return error.FileNotFound;
         },
         else => return err,
     };
     if (stat.size == 0 and !allow_zero_byte) {
-        std.debug.print("File is empty: {s}\n", .{path});
+        // std.debug.print("File is empty: {s}\n", .{path});
         return error.FileEmpty;
     }
 }
@@ -80,6 +80,6 @@ pub fn downloadFile(url: []const u8, dir: []const u8, allocator: std.mem.Allocat
 }
 
 test "ensureNotNull" {
-    var ptr: ?*u8 = null;
+    const ptr: ?*u8 = null;
     try std.testing.expectError(error.AllocationError, ensurePtrNotNull(ptr));
 }

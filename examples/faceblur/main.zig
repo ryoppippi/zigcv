@@ -3,13 +3,13 @@ const cv = @import("zigcv");
 const cv_c_api = cv.c_api;
 
 pub fn main() anyerror!void {
-    var allocator = std.heap.page_allocator;
+    const allocator = std.heap.page_allocator;
     var args = try std.process.argsWithAllocator(allocator);
     defer args.deinit();
     const prog = args.next();
     const device_id_char = args.next() orelse {
         std.log.err("usage: {s} [cameraID]", .{prog.?});
-        std.os.exit(1);
+        std.process.exit(1);
     };
     const device_id = try std.fmt.parseUnsigned(c_int, device_id_char, 10);
 
@@ -33,14 +33,14 @@ pub fn main() anyerror!void {
 
     classifier.load("./libs/gocv/data/haarcascade_frontalface_default.xml") catch {
         std.debug.print("no xml", .{});
-        std.os.exit(1);
+        std.process.exit(1);
     };
 
     const size = cv.Size{ .width = 75, .height = 75 };
     while (true) {
         webcam.read(&img) catch {
             std.debug.print("capture failed", .{});
-            std.os.exit(1);
+            std.process.exit(1);
         };
         if (img.isEmpty()) {
             continue;

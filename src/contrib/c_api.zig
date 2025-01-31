@@ -1,7 +1,7 @@
 pub usingnamespace @cImport({
-    @cInclude("aruco.h");
     @cInclude("bgsegm.h");
     @cInclude("face.h");
+    @cInclude("freetype.h");
     @cInclude("img_hash.h");
     @cInclude("tracking.h");
     @cInclude("wechat_qrcode.h");
