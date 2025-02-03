@@ -7,6 +7,7 @@ pub const highgui = @import("highgui.zig");
 pub const objdetect = @import("objdetect.zig");
 pub const imgcodecs = @import("imgcodecs.zig");
 pub const imgproc = @import("imgproc.zig");
+pub const ColorConversionCode = @import("imgproc/color_codes.zig").ColorConversionCode;
 pub const photo = @import("photo.zig");
 pub const svd = @import("svd.zig");
 pub const version = @import("version.zig");
