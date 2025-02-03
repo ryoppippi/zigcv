@@ -173,11 +173,10 @@ fn buildOpenCVStep(b: *std.Build) struct {
     const opencv_dep = b.dependency("opencv", .{});
     const opencv_contrib_dep = b.dependency("opencv_contrib", .{});
 
-    std.log.info("Building OpenCV4 from source with `zig cc` and `zig c++`\n", .{});
-
     const cmake_bin = b.findProgram(&.{"cmake"}, &.{}) catch @panic("Could not find cmake");
 
     const configure_cmd = b.addSystemCommand(&.{ cmake_bin, "-B" });
+    configure_cmd.setName("Running OpenCV's cmake --configure");
     const build_work_dir = configure_cmd.addOutputDirectoryArg("build_work");
     configure_cmd.setEnvironmentVariable("CC", "zig cc");
     configure_cmd.setEnvironmentVariable("CXX", "zig c++");
@@ -220,18 +219,22 @@ fn buildOpenCVStep(b: *std.Build) struct {
         "OPENCV_GENERATE_PKGCONFIG=OFF",
     });
     configure_cmd.addDirectoryArg(opencv_dep.path(""));
+    configure_cmd.expectExitCode(0);
 
     const nproc_bin = b.findProgram(&.{"nproc"}, &.{}) catch @panic("Couldn't find nproc");
     const num_cores = std.mem.trim(u8, b.run(&.{nproc_bin}), "\n");
 
     const build_cmd = b.addSystemCommand(&.{ cmake_bin, "--build" });
+    build_cmd.setName("Compiling OpenCV with zig");
     build_cmd.addDirectoryArg(build_work_dir);
     build_cmd.addArgs(&.{ "-j", num_cores });
     build_cmd.step.dependOn(&configure_cmd.step);
+    build_cmd.expectExitCode(0);
 
     const install_cmd = b.addSystemCommand(&.{ cmake_bin, "--install" });
     install_cmd.addDirectoryArg(build_work_dir);
     install_cmd.step.dependOn(&build_cmd.step);
+    install_cmd.expectExitCode(0);
 
     return .{
         install_cmd,

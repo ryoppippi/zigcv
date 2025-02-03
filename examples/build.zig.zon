@@ -25,7 +25,7 @@
     .dependencies = .{
         .zigcv = .{
             .url = "..",
-            .hash = "1220ff96fb126f0d90248262d1b4542dc43235ce1590f9878923bc2aa59e516070aa",
+            .hash = "12207c9ccc6e2e1a657c3340e8c037033c7ad276b0c3864fdd8d8894edd906ae8570",
         },
     },
     .paths = .{
