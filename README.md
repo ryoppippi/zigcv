@@ -97,6 +97,7 @@ may cause memory error on arm.
 
 - [ ] Get all examples working
 - [ ] Fix all commented out tests
+- [ ] Add cuda and openvino back
 
 ## License
 
