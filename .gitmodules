@@ -1,3 +1,0 @@
-[submodule "libs/gocv"]
-	path = libs/gocv
-	url = https://github.com/ryoppippi/gocv

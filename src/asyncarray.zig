@@ -12,7 +12,7 @@ pub const AsyncArray = struct {
     const Self = @This();
 
     pub fn init() !Self {
-        var ptr = c.AsyncArray_New();
+        const ptr = c.AsyncArray_New();
         return try Self.initFromC(ptr);
     }
 

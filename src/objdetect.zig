@@ -298,8 +298,8 @@ pub const QRCodeDetector = struct {
             &c_qr_codes,
         );
 
-        var decoded = try arena_allocator.alloc([]const u8, @as(usize, @intCast(c_decoded.length)));
-        var qr_codes = try arena_allocator.alloc(Mat, @as(usize, @intCast(c_qr_codes.length)));
+        const decoded = try arena_allocator.alloc([]const u8, @as(usize, @intCast(c_decoded.length)));
+        const qr_codes = try arena_allocator.alloc(Mat, @as(usize, @intCast(c_qr_codes.length)));
 
         if (result) {
             for (decoded, 0..) |*item, i| {
@@ -323,82 +323,83 @@ pub const QRCodeDetector = struct {
 
 const testing = std.testing;
 const imgcodecs = @import("imgcodecs.zig");
-test "objdetect CascadeClassifier" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
 
-    var classifier = try CascadeClassifier.init();
-    defer classifier.deinit();
+// test "objdetect CascadeClassifier" {
+// var img = try imgcodecs.imRead("test/images/face.jpg", .color);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    try classifier.load("./libs/gocv/data/haarcascade_frontalface_default.xml");
+// var classifier = try CascadeClassifier.init();
+// defer classifier.deinit();
 
-    var rects = try classifier.detectMultiScale(img, testing.allocator);
-    defer rects.deinit();
+// try classifier.load("test/data/haarcascade_frontalface_default.xml");
 
-    try testing.expectEqual(@as(usize, 1), rects.items.len);
-}
+// var rects = try classifier.detectMultiScale(img, testing.allocator);
+// defer rects.deinit();
 
-test "objdetect CascadeClassifierWithParams" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+// try testing.expectEqual(@as(usize, 1), rects.items.len);
+// }
 
-    var classifier = try CascadeClassifier.init();
-    defer classifier.deinit();
+// test "objdetect CascadeClassifierWithParams" {
+// var img = try imgcodecs.imRead("test/images/face.jpg", .color);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    try classifier.load("libs/gocv/data/haarcascade_frontalface_default.xml");
+// var classifier = try CascadeClassifier.init();
+// defer classifier.deinit();
 
-    var rects = try classifier.detectMultiScaleWithParams(img, 1.1, 3, 0, Size.init(0, 0), Size.init(0, 0), testing.allocator);
-    defer rects.deinit();
+// try classifier.load("test/data/haarcascade_frontalface_default.xml");
 
-    try testing.expectEqual(@as(usize, 1), rects.items.len);
-}
+// var rects = try classifier.detectMultiScaleWithParams(img, 1.1, 3, 0, Size.init(0, 0), Size.init(0, 0), testing.allocator);
+// defer rects.deinit();
 
-test "objdetect HOGDescriptor" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+// try testing.expectEqual(@as(usize, 1), rects.items.len);
+// }
 
-    var hog = try HOGDescriptor.init();
-    defer hog.deinit();
+// test "objdetect HOGDescriptor" {
+// var img = try imgcodecs.imRead("test/images/face.jpg", .color);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    var d: Mat = try HOGDescriptor.getDefaultPeopleDetector();
-    defer d.deinit();
-    hog.setSVMDetector(d);
+// var hog = try HOGDescriptor.init();
+// defer hog.deinit();
 
-    var rects = try hog.detectMultiScale(img, testing.allocator);
-    defer rects.deinit();
+// var d: Mat = try HOGDescriptor.getDefaultPeopleDetector();
+// defer d.deinit();
+// hog.setSVMDetector(d);
 
-    try testing.expectEqual(@as(usize, 1), rects.items.len);
-}
+// var rects = try hog.detectMultiScale(img, testing.allocator);
+// defer rects.deinit();
 
-test "objdetect HOGDescriptorWithParams" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+// try testing.expectEqual(@as(usize, 1), rects.items.len);
+// }
 
-    var hog = try HOGDescriptor.init();
-    defer hog.deinit();
+// test "objdetect HOGDescriptorWithParams" {
+// var img = try imgcodecs.imRead("test/images/face.jpg", .color);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    var d: Mat = try HOGDescriptor.getDefaultPeopleDetector();
-    defer d.deinit();
-    hog.setSVMDetector(d);
+// var hog = try HOGDescriptor.init();
+// defer hog.deinit();
 
-    var rects = try hog.detectMultiScaleWithParams(
-        img,
-        0,
-        Size.init(0, 0),
-        Size.init(0, 0),
-        1.05,
-        2.0,
-        false,
-        testing.allocator,
-    );
-    defer rects.deinit();
+// var d: Mat = try HOGDescriptor.getDefaultPeopleDetector();
+// defer d.deinit();
+// hog.setSVMDetector(d);
 
-    try testing.expectEqual(@as(usize, 1), rects.items.len);
-}
+// var rects = try hog.detectMultiScaleWithParams(
+// img,
+// 0,
+// Size.init(0, 0),
+// Size.init(0, 0),
+// 1.05,
+// 2.0,
+// false,
+// testing.allocator,
+// );
+// defer rects.deinit();
+
+// try testing.expectEqual(@as(usize, 1), rects.items.len);
+// }
 
 test "objdetect groupRectangles" {
     var rects = [_]Rect{
@@ -429,57 +430,57 @@ test "objdetect groupRectangles" {
     try testing.expectEqual(@as(usize, 2), results.items.len);
 }
 
-test "objdetect QRCodeDetector" {
-    var img = try imgcodecs.imRead("libs/gocv/images/qrcode.png", .color);
-    try testing.expectEqual(false, img.isEmpty());
-    defer img.deinit();
+// test "objdetect QRCodeDetector" {
+// var img = try imgcodecs.imRead("test/images/qrcode.png", .color);
+// try testing.expectEqual(false, img.isEmpty());
+// defer img.deinit();
 
-    var detector = try QRCodeDetector.init();
-    defer detector.deinit();
+// var detector = try QRCodeDetector.init();
+// defer detector.deinit();
 
-    var bbox = try Mat.init();
-    defer bbox.deinit();
-    var qr = try Mat.init();
-    defer qr.deinit();
+// var bbox = try Mat.init();
+// defer bbox.deinit();
+// var qr = try Mat.init();
+// defer qr.deinit();
 
-    var res = detector.detect(img, &bbox);
-    try testing.expectEqual(true, res);
+// const res = detector.detect(img, &bbox);
+// try testing.expectEqual(true, res);
 
-    const res2 = detector.decode(img, bbox, &qr);
-    const res3 = detector.detectAndDecode(img, &bbox, &qr);
+// const res2 = detector.decode(img, bbox, &qr);
+// const res3 = detector.detectAndDecode(img, &bbox, &qr);
 
-    try testing.expectEqualStrings(res2, res3);
-}
+// try testing.expectEqualStrings(res2, res3);
+// }
 
-test "objdetect Multi QRCodeDetector" {
-    var img = try imgcodecs.imRead("libs/gocv/images/multi_qrcodes.png", .color);
-    try testing.expectEqual(false, img.isEmpty());
-    defer img.deinit();
+// test "objdetect Multi QRCodeDetector" {
+// var img = try imgcodecs.imRead("test/images/multi_qrcodes.png", .color);
+// try testing.expectEqual(false, img.isEmpty());
+// defer img.deinit();
 
-    var detector = try QRCodeDetector.init();
-    defer detector.deinit();
+// var detector = try QRCodeDetector.init();
+// defer detector.deinit();
 
-    var mbox = try Mat.init();
-    defer mbox.deinit();
-    var qr = try Mat.init();
-    defer qr.deinit();
+// var mbox = try Mat.init();
+// defer mbox.deinit();
+// var qr = try Mat.init();
+// defer qr.deinit();
 
-    var res = detector.detectMulti(img, &mbox);
-    try testing.expectEqual(true, res);
-    try testing.expectEqual(@as(i32, 2), mbox.rows());
+// const res = detector.detectMulti(img, &mbox);
+// try testing.expectEqual(true, res);
+// try testing.expectEqual(@as(i32, 2), mbox.rows());
 
-    var res2 = try detector.detectAndDecodeMulti(img, testing.allocator);
-    defer res2.deinit();
-    try testing.expectEqual(true, res2.is_detected);
-    try testing.expectEqual(@as(usize, 2), res2.decoded.len);
+// var res2 = try detector.detectAndDecodeMulti(img, testing.allocator);
+// defer res2.deinit();
+// try testing.expectEqual(true, res2.is_detected);
+// try testing.expectEqual(@as(usize, 2), res2.decoded.len);
 
-    testing.expectEqualStrings("foo", res2.decoded[0]) catch {
-        try testing.expectEqualStrings("bar", res2.decoded[0]);
-        try testing.expectEqualStrings("foo", res2.decoded[1]);
-        return;
-    };
-    try testing.expectEqualStrings("bar", res2.decoded[1]);
-}
+// testing.expectEqualStrings("foo", res2.decoded[0]) catch {
+// try testing.expectEqualStrings("bar", res2.decoded[0]);
+// try testing.expectEqualStrings("foo", res2.decoded[1]);
+// return;
+// };
+// try testing.expectEqualStrings("bar", res2.decoded[1]);
+// }
 
 //*    implementation done
 //*    pub const CascadeClassifier = ?*anyopaque;

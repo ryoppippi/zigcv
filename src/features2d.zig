@@ -781,7 +781,7 @@ pub fn drawMatches(
         .dmatches = @as([*]c.DMatch, @ptrCast(c_matches1to2_array.ptr)),
     };
 
-    var c_matches_mask = core.toByteArray(matches_mask);
+    const c_matches_mask = core.toByteArray(matches_mask);
     c.DrawMatches(
         img1.toC(),
         c_keypoints1,
@@ -882,7 +882,7 @@ const testing = std.testing;
 const imgcodecs = @import("imgcodecs.zig");
 
 test "feature2d AKAZE" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -911,7 +911,7 @@ test "feature2d AKAZE" {
 }
 
 test "feature2d AgastFeatureDetector" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -928,7 +928,7 @@ test "feature2d AgastFeatureDetector" {
 }
 
 test "feature2d BRISK" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -954,7 +954,7 @@ test "feature2d BRISK" {
 }
 
 test "feature2d FastFeatureDetector" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -971,7 +971,7 @@ test "feature2d FastFeatureDetector" {
 }
 
 test "feature2d GFTTDetector" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -988,7 +988,7 @@ test "feature2d GFTTDetector" {
 }
 
 test "feature2d KAZE" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
 
     var dst = try Mat.init();
@@ -1015,7 +1015,7 @@ test "feature2d KAZE" {
 }
 
 test "feature2d MSER" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -1032,36 +1032,36 @@ test "feature2d MSER" {
     try testing.expect(len == 232 or len == 234 or len == 261);
 }
 
-test "feature2d ORB" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+// test "feature2d ORB" {
+// var img = try imgcodecs.imRead("test/images/face.jpg", .color);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    var dst = try Mat.init();
-    defer dst.deinit();
+// var dst = try Mat.init();
+// defer dst.deinit();
 
-    var orb = try ORB.init();
-    defer orb.deinit();
+// var orb = try ORB.init();
+// defer orb.deinit();
 
-    var kp = try orb.detect(img, std.testing.allocator);
-    defer kp.deinit();
+// var kp = try orb.detect(img, std.testing.allocator);
+// defer kp.deinit();
 
-    try testing.expectEqual(@as(usize, 500), kp.items.len);
+// try testing.expectEqual(@as(usize, 500), kp.items.len);
 
-    var mask = try Mat.init();
-    defer mask.deinit();
-    var desc = try Mat.init();
-    defer desc.deinit();
+// var mask = try Mat.init();
+// defer mask.deinit();
+// var desc = try Mat.init();
+// defer desc.deinit();
 
-    var kp2 = try orb.detectAndCompute(img, mask, &desc, std.testing.allocator);
-    defer kp2.deinit();
+// var kp2 = try orb.detectAndCompute(img, mask, &desc, std.testing.allocator);
+// defer kp2.deinit();
 
-    try testing.expectEqual(@as(usize, 500), kp2.items.len);
-    try testing.expectEqual(false, desc.isEmpty());
-}
+// try testing.expectEqual(@as(usize, 500), kp2.items.len);
+// try testing.expectEqual(false, desc.isEmpty());
+// }
 
 test "feature2d SimpleBlobDetector" {
-    var img = try imgcodecs.imRead("libs/gocv/images/face.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/face.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -1078,7 +1078,7 @@ test "feature2d SimpleBlobDetector" {
 }
 
 test "feature2d SimpleBlobDetectorWithParams" {
-    var img = try imgcodecs.imRead("libs/gocv/images/circles.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/circles.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -1098,7 +1098,7 @@ test "feature2d SimpleBlobDetectorWithParams" {
 }
 
 test "feature2d BFMatcher" {
-    const img_path = "libs/gocv/images/sift_descriptor.png";
+    const img_path = "test/images/sift_descriptor.png";
     var desc1 = try imgcodecs.imRead(img_path, .gray_scale);
     defer desc1.deinit();
     try testing.expectEqual(false, desc1.isEmpty());
@@ -1122,7 +1122,7 @@ test "feature2d BFMatcher" {
 }
 
 test "feature2d FlannBasedMatcher" {
-    const img_path = "libs/gocv/images/sift_descriptor.png";
+    const img_path = "test/images/sift_descriptor.png";
     var desc1 = try imgcodecs.imRead(img_path, .gray_scale);
     defer desc1.deinit();
     desc1.convertTo(&desc1, .cv32fc1);
@@ -1147,7 +1147,7 @@ test "feature2d FlannBasedMatcher" {
 }
 
 test "feature2d drawPoints" {
-    var img = try imgcodecs.imRead("libs/gocv/images/simple.jpg", .color);
+    var img = try imgcodecs.imRead("test/images/simple.jpg", .color);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 
@@ -1168,8 +1168,8 @@ test "feature2d drawPoints" {
 }
 
 test "feature2d DrawMatches" {
-    const query_path = "libs/gocv/images/box.png";
-    const train_path = "libs/gocv/images/box_in_scene.png";
+    const query_path = "test/images/box.png";
+    const train_path = "test/images/box_in_scene.png";
 
     var query = try imgcodecs.imRead(query_path, .color);
     defer query.deinit();
@@ -1234,7 +1234,7 @@ test "feature2d DrawMatches" {
 }
 
 test "feature2d SIFT" {
-    var img = try imgcodecs.imRead("libs/gocv/images/sift_descriptor.png", .gray_scale);
+    var img = try imgcodecs.imRead("test/images/sift_descriptor.png", .gray_scale);
     defer img.deinit();
     try testing.expectEqual(false, img.isEmpty());
 

@@ -1,6 +1,5 @@
 const std = @import("std");
 const cv = @import("zigcv");
-const cv_c_api = cv.c_api;
 
 pub fn main() anyerror!void {
     var args = try std.process.argsWithAllocator(std.heap.page_allocator);
@@ -8,7 +7,7 @@ pub fn main() anyerror!void {
     const prog = args.next();
     const img_PATH = args.next() orelse {
         std.log.err("usage: {s} [image_PATH]", .{prog.?});
-        std.os.exit(1);
+        std.process.exit(1);
     };
 
     // open display window

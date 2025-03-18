@@ -13,7 +13,7 @@ test "show version" {
 
     const version = openCVVersion();
 
-    const actual_version = (std.ChildProcess.exec(.{
+    const actual_version = (std.process.Child.run(.{
         .allocator = allocator,
         .argv = &.{ "pkg-config", "--modversion", "opencv4" },
     }) catch {

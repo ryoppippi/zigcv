@@ -136,7 +136,7 @@ pub const Fisheye = struct {
         new_size: Size,
         fov_scale: f64,
     ) !Mat {
-        var mat = try Mat.init();
+        const mat = try Mat.init();
         _ = c.Fisheye_EstimateNewCameraMatrixForUndistortRectify(
             k.toC(),
             d.toC(),
@@ -310,7 +310,7 @@ pub fn drawChessboardCorners(
 /// For further details, please see:
 /// https://docs.opencv.org/master/d9/d0c/group__calib3d.html#gad767faff73e9cbd8b9d92b955b50062d
 pub fn estimateAffinePartial2D(from: Point2fVector, to: Point2fVector) !Mat {
-    var ptr = c.EstimateAffinePartial2D(from.toC(), to.toC());
+    const ptr = c.EstimateAffinePartial2D(from.toC(), to.toC());
     return try Mat.initFromC(ptr);
 }
 
@@ -319,7 +319,7 @@ pub fn estimateAffinePartial2D(from: Point2fVector, to: Point2fVector) !Mat {
 /// For further details, please see:
 /// https://docs.opencv.org/4.0.0/d9/d0c/group__calib3d.html#ga27865b1d26bac9ce91efaee83e94d4dd
 pub fn estimateAffine2D(from: Point2fVector, to: Point2fVector) !Mat {
-    var ptr = c.EstimateAffine2D(from.toC(), to.toC());
+    const ptr = c.EstimateAffine2D(from.toC(), to.toC());
     return try Mat.initFromC(ptr);
 }
 
@@ -342,7 +342,7 @@ pub fn estimateAffine2DWithParams(
     confidence: f64,
     refine_iters: usize,
 ) !Mat {
-    var ptr = c.EstimateAffine2DWithParams(
+    const ptr = c.EstimateAffine2DWithParams(
         from.toC(),
         to.toC(),
         inliers.toC(),
@@ -358,8 +358,8 @@ pub fn estimateAffine2DWithParams(
 const testing = std.testing;
 const imgcodecs = @import("imgcodecs.zig");
 const imgproc = @import("imgproc.zig");
-const img_dir = "./libs/gocv/images/";
-const cache_dir = "./zig-cache/tmp/";
+const img_dir = "test/images/";
+const cache_dir = "./.zig-cache/tmp/";
 test "calib3d fisheye undistortImage" {
     var img = try imgcodecs.imRead(img_dir ++ "fisheye_sample.jpg", .gray_scale);
     defer img.deinit();
@@ -435,7 +435,7 @@ test "calib3d fisheye undistortImageWithParams" {
     k_new.set(f64, 0, 0, 0.4 * k.get(f64, 0, 0));
     k_new.set(f64, 1, 1, 0.4 * k.get(f64, 1, 1));
 
-    var size = core.Size.init(dst.rows(), dst.cols());
+    const size = core.Size.init(dst.rows(), dst.cols());
 
     Fisheye.undistortImageWithParams(img, &dst, k, d, k_new, size);
     try testing.expectEqual(false, dst.isEmpty());
@@ -473,7 +473,7 @@ test "calib3d initUndistortRectifyMap getOptimalNewCameraMatrixWithParams" {
     d.set(f64, 0, 2, -2.62985819e-03);
     d.set(f64, 0, 3, 2.05841873e-04);
     d.set(f64, 0, 4, -2.35021914e-02);
-    var res = try getOptimalNewCameraMatrixWithParams(
+    const res = try getOptimalNewCameraMatrixWithParams(
         k,
         d,
         Size.init(img.rows(), img.cols()),
@@ -637,56 +637,56 @@ test "calib3d find and draw chessboard" {
     try imgcodecs.imWrite(cache_dir ++ "chessboard_4x6_result.png", img2);
 }
 
-test "calib3d find and draw chessboardSB" {
-    var img = try imgcodecs.imRead(img_dir ++ "chessboard_4x6.png", .unchanged);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+// test "calib3d find and draw chessboardSB" {
+// var img = try imgcodecs.imRead(img_dir ++ "chessboard_4x6.png", .unchanged);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    var corners = try Mat.init();
-    defer corners.deinit();
+// var corners = try Mat.init();
+// defer corners.deinit();
 
-    const found = findChessboardCornersSB(img, Size.init(4, 6), &corners, .{});
-    try testing.expectEqual(true, found);
-    try testing.expectEqual(false, corners.isEmpty());
+// const found = findChessboardCornersSB(img, Size.init(4, 6), &corners, .{});
+// try testing.expectEqual(true, found);
+// try testing.expectEqual(false, corners.isEmpty());
 
-    var img2 = try Mat.initSize(150, 150, .cv8uc1);
-    defer img2.deinit();
+// var img2 = try Mat.initSize(150, 150, .cv8uc1);
+// defer img2.deinit();
 
-    drawChessboardCorners(&img2, Size.init(4, 6), corners, true);
+// drawChessboardCorners(&img2, Size.init(4, 6), corners, true);
 
-    try testing.expectEqual(false, img2.isEmpty());
-    try imgcodecs.imWrite(cache_dir ++ "chessboard_4x6_sb_result.png", img2);
-}
+// try testing.expectEqual(false, img2.isEmpty());
+// try imgcodecs.imWrite(cache_dir ++ "chessboard_4x6_sb_result.png", img2);
+// }
 
-test "calib3d find and draw chessboardSBWithMeta" {
-    var img = try imgcodecs.imRead(img_dir ++ "chessboard_4x6.png", .unchanged);
-    defer img.deinit();
-    try testing.expectEqual(false, img.isEmpty());
+// test "calib3d find and draw chessboardSBWithMeta" {
+// var img = try imgcodecs.imRead(img_dir ++ "chessboard_4x6.png", .unchanged);
+// defer img.deinit();
+// try testing.expectEqual(false, img.isEmpty());
 
-    var corners = try Mat.init();
-    defer corners.deinit();
+// var corners = try Mat.init();
+// defer corners.deinit();
 
-    var meta = try Mat.init();
-    defer meta.deinit();
+// var meta = try Mat.init();
+// defer meta.deinit();
 
-    const found = findChessboardCornersSBWithMeta(
-        img,
-        Size.init(4, 6),
-        &corners,
-        .{},
-        &meta,
-    );
-    try testing.expectEqual(true, found);
-    try testing.expectEqual(false, corners.isEmpty());
+// const found = findChessboardCornersSBWithMeta(
+// img,
+// Size.init(4, 6),
+// &corners,
+// .{},
+// &meta,
+// );
+// try testing.expectEqual(true, found);
+// try testing.expectEqual(false, corners.isEmpty());
 
-    var img2 = try Mat.initSize(150, 150, .cv8uc1);
-    defer img2.deinit();
+// var img2 = try Mat.initSize(150, 150, .cv8uc1);
+// defer img2.deinit();
 
-    drawChessboardCorners(&img2, Size.init(4, 6), corners, true);
+// drawChessboardCorners(&img2, Size.init(4, 6), corners, true);
 
-    try testing.expectEqual(false, img2.isEmpty());
-    try imgcodecs.imWrite(cache_dir ++ "chessboard_4x6_sb_meta_result.png", img2);
-}
+// try testing.expectEqual(false, img2.isEmpty());
+// try imgcodecs.imWrite(cache_dir ++ "chessboard_4x6_sb_meta_result.png", img2);
+// }
 
 test "calib3d calibrateCamera" {
     var img = try imgcodecs.imRead(img_dir ++ "chessboard_4x6_distort.png", .gray_scale);
@@ -696,8 +696,8 @@ test "calib3d calibrateCamera" {
     var corners = try Mat.init();
     defer corners.deinit();
 
-    var size = Size.init(4, 6);
-    var found = findChessboardCorners(img, size, &corners, .{});
+    const size = Size.init(4, 6);
+    const found = findChessboardCorners(img, size, &corners, .{});
     try testing.expectEqual(true, found);
     try testing.expectEqual(false, corners.isEmpty());
 

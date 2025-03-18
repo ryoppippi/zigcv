@@ -118,7 +118,7 @@ pub const PointVector = struct {
 
         var c_point_array = try arena_allocator.alloc(c.Point, len);
         for (points, 0..) |point, i| c_point_array[i] = point.toC();
-        var contour: c.Contour = .{
+        const contour: c.Contour = .{
             .length = @as(i32, @intCast(points.len)),
             .points = @as([*]c.Point, @ptrCast(c_point_array.ptr)),
         };
@@ -138,7 +138,7 @@ pub const PointVector = struct {
     }
 
     pub fn at(self: Self, idx: i32) Point {
-        var p = c.PointVector_At(self.ptr, idx);
+        const p = c.PointVector_At(self.ptr, idx);
         return Point.initFromC(p);
     }
 
@@ -194,7 +194,7 @@ pub const PointsVector = struct {
             };
         }
 
-        var c_points = c.struct_Contours{
+        const c_points = c.struct_Contours{
             .length = @as(i32, @intCast(points.len)),
             .contours = @as([*]c.Contour, @ptrCast(c_points_array.ptr)),
         };
@@ -344,7 +344,7 @@ pub const Points2fVector = struct {
             };
         }
 
-        var c_points = c.struct_Contours{
+        const c_points = c.struct_Contours{
             .length = @as(i32, @intCast(points.len)),
             .contours = @as([*]c.Contour, @ptrCast(c_points_array.ptr)),
         };
@@ -495,7 +495,7 @@ pub const Points3fVector = struct {
             };
         }
 
-        var c_points = c.struct_Contours{
+        const c_points = c.struct_Contours{
             .length = @as(i32, @intCast(points.len)),
             .contours = @as([*]c.Contour, @ptrCast(c_points_array.ptr)),
         };

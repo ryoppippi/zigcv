@@ -1,82 +1,110 @@
-# ZIGCV
-
-[![ci](https://github.com/ryoppippi/zigcv/actions/workflows/ci.yml/badge.svg)](https://github.com/ryoppippi/zigcv/actions/workflows/ci.yml)
+# ZigCV
 
 <div align="center">
   <img src="./logo/zigcv.png" width="50%" />
 </div>
 
-The ZIGCV library provides Zig language bindings for the [OpenCV 4](http://opencv.org/) computer vision library.
+The ZigCV library provides Zig language bindings for the
+[OpenCV 4](http://opencv.org/) computer vision library.
 
-The ZIGCV library supports the head/master of zig and OpenCV (v4.6.0) on Linux, macOS, and Windows.
+The ZigCV library supports the same nominated version of zig as
+[Mach](https://machengine.org/) and the
+[zig-gamedev](https://github.com/zig-gamedev/) libraries.
 
-## Caution
+The ZigCV library currently supports
+[OpenCV v4.11.0](https://github.com/opencv/opencv/tree/4.11.0).
 
-Still under development, so the zig APIs will be dynamically changed.
+It uses [GoCV 0.40.0](https://github.com/hybridgroup/gocv/tree/v0.40.0) for its
+C bindings to OpenCV.
 
-You can use `const c_api = @import("zigcv").c_api;` to call c bindings directly.  
-This C-API is currently fixed.
+**Caution**
 
-## How to execute
+Under development. The Zig APIs may be missing or change.
 
-### Use your own package manager
-At first, install openCV 4.6. (maybe you can read how to install from [here](https://github.com/hybridgroup/gocv#how-to-install)).  
-Then:
+## Install
+
+Add to your project's dependencies:
 
 ```sh
-git clone --recursive https://github.com/ryoppippi/zigcv
-cd zigcv
-zig build
+zig fetch --save 'git+https://codeberg.org/glitchcake/zigcv'
 ```
 
-Currently this repo works with zig 0.11.0, so make sure you have it installed.
-We are working on updating to zig 0.12.0.
+Add to your `build.zig`:
 
-
-### Use devbox
-We also provide a devbox config to manage dependencies and build environments.
-
-```sh
-git clone --recursive https://github.com/zigcv
-cd zigcv
-devbox init
-
+```zig
+const zigcv = b.dependency("zigcv", .{});
+exe.root_module.addImport("zigcv", zigcv.module("root"));
+exe.linkLibrary(zigcv.artifact("zigcv"));
 ```
 
-Checkout [devbox.json](./devbox.json) for more details.
+## Usage
 
-## Demos
+Once added to your project, you may import and use.
 
-you can build some demos.
-For example:
-
-```sh
-zig build examples
-./zig-out/bin/face_detection 0
+```zig
+const cv = @import("zigcv");
 ```
 
-Or you can run the demo with the following command:
+You can also call C bindings directly via the `c` struct on the import.
+
+```zig
+cv.c
+```
+
+### Example
+
+Here is a minimal program:
+
+```zig
+const std = @import("std");
+const cv = @import("zigcv");
+
+pub fn main() !void {
+    std.debug.print("version via zig binding:\t{s}\n", .{cv.openCVVersion()});
+    std.debug.print("version via c api directly:\t{s}\n", .{cv.c.openCVVersion()});
+}
+```
+
+## More Examples
+
+There are a handful of sample programs in the `examples/` directory.
+
+You can build them by running `zig build` there:
 
 ```sh
-devbox run build examples
-./zig-out/bin/face_detection 0
+cd examples && zig build; popd; ./examples/zig-out/bin/hello
+```
+
+## Demo
+
+```
+./examples/zig-out/bin/face_detection 0
 ```
 
 <div align="center">
   <img width="400" alt="face detection" src="https://user-images.githubusercontent.com/1560508/188515175-4d344660-5680-43e7-9b74-3bad92507430.gif">
 </div>
 
-You can see the full demo list by `zig build --help`.
-
 ## Technical restrictions
 
-Due to zig being a relatively new language it does [not have full C ABI support](https://github.com/ziglang/zig/issues/1481) at the moment.  
-For use that mainly means we can't use any functions that return structs that are less than 16 bytes large on x86, and passing structs to any functions may cause memory error on arm.
+Due to zig being a relatively new language it does
+[not have full C ABI support](https://github.com/ziglang/zig/issues/1481) at the
+moment. For use that mainly means we can't use any functions that return structs
+that are less than 16 bytes large on x86, and passing structs to any functions
+may cause memory error on arm.
+
+## Todo
+
+- [ ] Get all examples working
+- [ ] Fix all commented out tests
+- [ ] Add cuda and openvino back
 
 ## License
 
 MIT
 
-## Author
+## Authors
 
 Ryotaro "Justin" Kimura (a.k.a. ryoppippi)
+
+[glitchcake](https://codeberg.org/glitchcake/)

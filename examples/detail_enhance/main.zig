@@ -21,7 +21,7 @@ pub fn main() anyerror!void {
     while (true) {
         webcam.read(&img) catch {
             std.debug.print("capture failed", .{});
-            std.os.exit(1);
+            std.process.exit(1);
         };
         cv.detailEnhance(img, &img2, 100, 0.5);
 
