@@ -6,7 +6,7 @@
     "opencv@4.6.0",
     "pkg-config@latest",
     "unzip@latest",
-    "deno@1.43.1"
+    "deno@1.46.3"
   ],
   "shell": {
     "scripts": {
