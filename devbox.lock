@@ -53,51 +53,83 @@
       "last_modified": "2025-04-23T03:04:08Z",
       "resolved": "github:NixOS/nixpkgs/507b63021ada5fee621b6ca371c4fca9ca46f52c?lastModified=1745377448&narHash=sha256-jhZDfXVKdD7TSEGgzFJQvEEZ2K65UMiqW5YJ2aIqxMA%3D"
     },
-    "opencv@4.6.0": {
-      "last_modified": "2022-12-17T09:19:40Z",
-      "resolved": "github:NixOS/nixpkgs/80c24eeb9ff46aa99617844d0c4168659e35175f#opencv",
+    "opencv@4.11.0": {
+      "last_modified": "2025-05-07T00:09:58Z",
+      "resolved": "github:NixOS/nixpkgs/b3582c75c7f21ce0b429898980eddbbf05c68e55#opencv",
       "source": "devbox-search",
-      "version": "4.6.0",
+      "version": "4.11.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/6csxf267wbdjfx7liqim3qsf2x8c2m12-opencv-4.6.0",
+              "path": "/nix/store/rp63qmc3sciyy0gq895wvpld44xil3n7-opencv-4.11.0",
               "default": true
+            },
+            {
+              "name": "cxxdev",
+              "path": "/nix/store/q9jd9dh863calm7zlnrm694qmllgfdp6-opencv-4.11.0-cxxdev"
+            },
+            {
+              "name": "package_tests",
+              "path": "/nix/store/k39k68h57bbjvh5dsr3w9hcwjn7vd9mx-opencv-4.11.0-package_tests"
             }
           ],
-          "store_path": "/nix/store/6csxf267wbdjfx7liqim3qsf2x8c2m12-opencv-4.6.0"
+          "store_path": "/nix/store/rp63qmc3sciyy0gq895wvpld44xil3n7-opencv-4.11.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/kszqyyic4lixhyvvsh44zikd5wvyalgy-opencv-4.6.0",
+              "path": "/nix/store/d9i4w1c1mgclh5l813cdrnw31d6qvns9-opencv-4.11.0",
               "default": true
+            },
+            {
+              "name": "package_tests",
+              "path": "/nix/store/4cgsdd264pvwpf56ckxhhn02ag7r3ind-opencv-4.11.0-package_tests"
+            },
+            {
+              "name": "cxxdev",
+              "path": "/nix/store/iwri6jzx50cz37nql0h2ws53q1bclywl-opencv-4.11.0-cxxdev"
             }
           ],
-          "store_path": "/nix/store/kszqyyic4lixhyvvsh44zikd5wvyalgy-opencv-4.6.0"
+          "store_path": "/nix/store/d9i4w1c1mgclh5l813cdrnw31d6qvns9-opencv-4.11.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/54922bgl2zh411jrgyk3mifza45ab7wh-opencv-4.6.0",
+              "path": "/nix/store/npib8zb1mm4syzwldhshglp7kd828471-opencv-4.11.0",
               "default": true
+            },
+            {
+              "name": "cxxdev",
+              "path": "/nix/store/4z0s520q18zdxbwy1qyaf3r47l9npacd-opencv-4.11.0-cxxdev"
+            },
+            {
+              "name": "package_tests",
+              "path": "/nix/store/6n63rq8xd0wjvaf7m3zabiv80lwqwp4s-opencv-4.11.0-package_tests"
             }
           ],
-          "store_path": "/nix/store/54922bgl2zh411jrgyk3mifza45ab7wh-opencv-4.6.0"
+          "store_path": "/nix/store/npib8zb1mm4syzwldhshglp7kd828471-opencv-4.11.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/ncgql223yw95pzqbk366k547hcrgvyfy-opencv-4.6.0",
+              "path": "/nix/store/r8qd83x0fd2as0lfvq7v7pfq6if2wghi-opencv-4.11.0",
               "default": true
+            },
+            {
+              "name": "cxxdev",
+              "path": "/nix/store/9ikkjmbvv63sqwz261h9fik8zgxdbnfg-opencv-4.11.0-cxxdev"
+            },
+            {
+              "name": "package_tests",
+              "path": "/nix/store/sfzfqxfff9ixs9z9sffv1nd7pivfz20z-opencv-4.11.0-package_tests"
             }
           ],
-          "store_path": "/nix/store/ncgql223yw95pzqbk366k547hcrgvyfy-opencv-4.6.0"
+          "store_path": "/nix/store/r8qd83x0fd2as0lfvq7v7pfq6if2wghi-opencv-4.11.0"
         }
       }
     },
