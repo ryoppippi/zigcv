@@ -73,6 +73,14 @@ You can see the full demo list by `zig build --help`.
 Due to zig being a relatively new language it does [not have full C ABI support](https://github.com/ziglang/zig/issues/1481) at the moment.  
 For use that mainly means we can't use any functions that return structs that are less than 16 bytes large on x86, and passing structs to any functions may cause memory error on arm.
 
+## Sponsors
+
+<p align="center">
+	<a href="https://github.com/sponsors/ryoppippi">
+		<img src="https://cdn.jsdelivr.net/gh/ryoppippi/sponsors/sponsors.svg">
+	</a>
+</p>
+
 ## License
 
 MIT
