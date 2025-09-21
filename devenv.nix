@@ -51,7 +51,7 @@ let
   ];
 
 in
-{
+  {
   name = "zigcv";
 
   env = {
@@ -76,12 +76,13 @@ in
   # devenv 1.9's tasks helper requires nightly Cargo; stub it out to avoid the build.
   task.package = pkgs.writeShellScriptBin "devenv-tasks" ''
     exit 0
-  '';
+    '';
 
   scripts = {
     version.exec = "zig version";
     download-models.exec = modelSync;
     build.exec = "zig build --verbose";
+    "build-release".exec = "zig build -Doptimize=ReleaseFast";
     test.exec = "zig build test --verbose";
     fmt.exec = "zig fmt ./**/*.zig";
     "fmt-check".exec = "zig fmt --check ./**/*.zig";
@@ -91,7 +92,7 @@ in
     zig version
     pkg-config --modversion opencv4 || true
     if [ ! -f zig-cache/tmp/.models_synced ]; then
-      ${modelSync}
+    ${modelSync}
     fi
   '';
 
