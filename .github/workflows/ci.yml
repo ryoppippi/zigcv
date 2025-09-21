@@ -49,8 +49,6 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
-      - name: Download models
-        run: devenv shell -- download-models
       - name: Build
         run: devenv shell -- build
       - name: Test
