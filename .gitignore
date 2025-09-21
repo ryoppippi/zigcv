@@ -35,3 +35,13 @@ mnist_png/*
 
 docs/
 src/images
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
