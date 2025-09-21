@@ -34,6 +34,14 @@ let
 
   models = import ./nix/models.nix { inherit pkgs; };
 
+  modelSync = ''
+    set -euo pipefail
+    : "''${ZIGCV_MODEL_DIR:?ZIGCV_MODEL_DIR must point to the staged model directory}"
+    mkdir -p zig-cache/tmp
+    cp -f "''${ZIGCV_MODEL_DIR}"/* zig-cache/tmp/
+    touch zig-cache/tmp/.models_synced
+  '';
+
   basePackages = [
     zigPackage
     zlsPackage
@@ -72,12 +80,7 @@ in
 
   scripts = {
     version.exec = "zig version";
-    download-models.exec = ''
-      set -euo pipefail
-      : "''${ZIGCV_MODEL_DIR:?ZIGCV_MODEL_DIR must point to the staged model directory}"
-      mkdir -p zig-cache/tmp
-      cp -f "''${ZIGCV_MODEL_DIR}"/* zig-cache/tmp/
-    '';
+    download-models.exec = modelSync;
     build.exec = "zig build --verbose";
     test.exec = "zig build test --verbose";
     fmt.exec = "zig fmt ./**/*.zig";
@@ -87,6 +90,9 @@ in
   enterShell = ''
     zig version
     pkg-config --modversion opencv4 || true
+    if [ ! -f zig-cache/tmp/.models_synced ]; then
+      ${modelSync}
+    fi
   '';
 
   enterTest = ''
