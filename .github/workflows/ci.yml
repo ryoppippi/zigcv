@@ -27,6 +27,8 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
+      - name: Activate shell
+        run: devenv shell -- echo "Shell activated"
       - name: Format check
         run: devenv shell -- fmt-check
 
@@ -49,6 +51,8 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
+      - name: Activate shell
+        run: devenv shell -- echo "Shell activated"
       - name: Build
         run: devenv shell -- build
       - name: Test
