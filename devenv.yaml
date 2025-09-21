@@ -9,3 +9,5 @@ inputs:
         follows: nixpkgs
   nixpkgs-opencv-4-6:
     url: github:NixOS/nixpkgs/nixos-22.11
+  zls:
+    url: github:zigtools/zls

@@ -28,8 +28,6 @@ zig build test
 
 # Download required ML models for tests (required before running tests)
 devenv shell -- download-models
-# or manually:
-bun run scripts/download_models.ts
 ```
 
 ### Development with devenv
@@ -88,7 +86,7 @@ pub const MyType = struct {
 
 ## Testing Requirements
 
-DNN tests require pre-downloaded models. Run `devenv shell -- download-models` before testing to fetch:
+DNN tests require pre-downloaded models. Run `devenv shell -- download-models` before testing to sync the pinned assets:
 - Caffe models for face detection
 - TensorFlow models for object detection
 - Test data files

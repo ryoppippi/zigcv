@@ -34,7 +34,7 @@ We are working on updating to zig 0.12.0.
 
 
 ### Use devenv (recommended)
-We also provide a [devenv](https://devenv.sh) environment powered by Nix that bundles Zig 0.11.0, ZLS 0.14.0, OpenCV 4.6.0, Deno, pkg-config, and unzip.
+We also provide a [devenv](https://devenv.sh) environment powered by Nix that bundles Zig 0.11.0, the latest [ZLS](https://github.com/zigtools/zls) release, OpenCV 4.6.0, pkg-config, and pre-fetched DNN model assets.
 
 ```sh
 nix profile install github:cachix/devenv/latest
@@ -47,6 +47,7 @@ test
 ```
 
 Inside the shell you'll find helper commands such as `build`, `test`, `fmt`, `fmt-check`, and `download-models`. See [devenv.nix](./devenv.nix) for more details.
+`download-models` syncs the pinned model corpus from the Nix store into `zig-cache/tmp`, so the heavier DNN tests can run without hitting the network.
 
 ## Demos
 
