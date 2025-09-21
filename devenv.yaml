@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://devenv.sh/devenv.schema.json
+inputs:
+  nixpkgs:
+    url: github:NixOS/nixpkgs/nixos-24.05
+  zig-overlay:
+    url: github:mitchellh/zig-overlay
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+  nixpkgs-opencv-4-6:
+    url: github:NixOS/nixpkgs/nixos-22.11
+  zls:
+    url: github:zigtools/zls

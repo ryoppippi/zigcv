@@ -27,21 +27,19 @@ zig build facedetect
 zig build test
 
 # Download required ML models for tests (required before running tests)
-devbox run download-models
-# or manually:
-bun run scripts/download_models.ts
+devenv shell -- download-models
 ```
 
-### Development with Devbox
+### Development with devenv
 ```bash
-# Enter devbox shell
-devbox shell
+# Enter devenv shell
+devenv shell
 
-# Build using devbox
-devbox run build
+# Build using devenv (inside the shell)
+build
 
-# Run tests
-devbox run test
+# Run tests (inside the shell)
+test
 ```
 
 ## Architecture
@@ -88,7 +86,7 @@ pub const MyType = struct {
 
 ## Testing Requirements
 
-DNN tests require pre-downloaded models. Run `devbox run download-models` before testing to fetch:
+DNN tests require pre-downloaded models. Run `devenv shell -- download-models` before testing to sync the pinned assets:
 - Caffe models for face detection
 - TensorFlow models for object detection
 - Test data files

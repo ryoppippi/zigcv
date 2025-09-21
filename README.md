@@ -33,17 +33,21 @@ Currently this repo works with zig 0.11.0, so make sure you have it installed.
 We are working on updating to zig 0.12.0.
 
 
-### Use devbox
-We also provide a devbox config to manage dependencies and build environments.
+### Use devenv (recommended)
+We also provide a [devenv](https://devenv.sh) environment powered by Nix that bundles Zig 0.11.0, the latest [ZLS](https://github.com/zigtools/zls) release, OpenCV 4.6.0, pkg-config, and pre-fetched DNN model assets.
 
 ```sh
-git clone --recursive https://github.com/zigcv
+nix profile install github:cachix/devenv/latest
+git clone --recursive https://github.com/ryoppippi/zigcv
 cd zigcv
-devbox init
-
+devenv shell
+# inside the shell
+build
+test
 ```
 
-Checkout [devbox.json](./devbox.json) for more details.
+Inside the shell you'll find helper commands such as `build`, `test`, `fmt`, `fmt-check`, and `download-models`. See [devenv.nix](./devenv.nix) for more details.
+`download-models` syncs the pinned model corpus from the Nix store into `zig-cache/tmp`, so the heavier DNN tests can run without hitting the network.
 
 ## Demos
 
@@ -55,10 +59,12 @@ zig build examples
 ./zig-out/bin/face_detection 0
 ```
 
-Or you can run the demo with the following command:
+Or you can run the demo from the devenv shell:
 
 ```sh
-devbox run build examples
+devenv shell
+# inside the shell
+build examples
 ./zig-out/bin/face_detection 0
 ```
 

@@ -2,13 +2,8 @@
 // It can be used with either the Caffe face tracking or Tensorflow object detection models that are
 // included with OpenCV 3.4
 //
-// To perform face tracking with the Caffe model:
-//
-// Download the model file from:
-// https://github.com/opencv/opencv_3rdparty/raw/dnn_samples_face_detector_20170830/res10_300x300_ssd_iter_140000.caffemodel
-//
-// You will also need the prototxt config file:
-// https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector/deploy.prototxt
+// To perform face tracking with the Caffe model, make sure the pinned
+// assets are synced locally (e.g. `devenv shell -- download-models`).
 //
 // To perform object tracking with the Tensorflow model:
 //
@@ -28,9 +23,7 @@ const c_api = cv.c_api;
 
 const cache_dir = "./zig-cache/tmp/";
 const model_path = cache_dir ++ "res10_300x300_ssd_iter_140000.caffemodel";
-const model_url = "https://github.com/opencv/opencv_3rdparty/raw/dnn_samples_face_detector_20170830/res10_300x300_ssd_iter_140000.caffemodel";
 const config_path = cache_dir ++ "deploy.prototxt";
-const config_url = "https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector/deploy.prototxt";
 
 pub fn main() anyerror!void {
     var allocator = std.heap.page_allocator;
@@ -59,8 +52,8 @@ pub fn main() anyerror!void {
     defer img.deinit();
 
     // open DNN object tracking model
-    // try downloadFile(model_url, cache_dir, allocator);
-    // try downloadFile(config_url, cache_dir, allocator);
+    try cv.utils.ensureModelFile("res10_300x300_ssd_iter_140000.caffemodel", allocator);
+    try cv.utils.ensureModelFile("deploy.prototxt", allocator);
     var net = cv.Net.readNet(model_path, config_path) catch |err| {
         std.debug.print("Error: {}\n", .{err});
         std.os.exit(1);
