@@ -10,7 +10,12 @@ on:
 
 jobs:
   fmt:
-    runs-on: macos-14
+    strategy:
+      matrix:
+        os:
+          - macos-14
+          - ubuntu-24.04
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
@@ -31,7 +36,7 @@ jobs:
       matrix:
         os: 
           - macos-14
-          # - ubuntu-latest
+          - ubuntu-24.04
     runs-on: ${{matrix.os}}
     defaults:
       run:
