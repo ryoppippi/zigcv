@@ -9,5 +9,12 @@ inputs:
         follows: nixpkgs
   nixpkgs-opencv-4-6:
     url: github:NixOS/nixpkgs/nixos-22.11
+  git-hooks:
+    url: github:cachix/git-hooks.nix
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+  pre-commit-hooks:
+    follows: git-hooks
   zls:
     url: github:zigtools/zls
