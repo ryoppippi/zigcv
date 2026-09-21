@@ -3,17 +3,11 @@
 let
   zigVersion = "0.11.0";
 
-  zigOverlayPkgs =
-    if builtins.hasAttr pkgs.system inputs."zig-overlay".packages then
-      builtins.getAttr pkgs.system inputs."zig-overlay".packages
-    else
-      throw "zig-overlay does not provide packages for this system";
-
   zigPackage =
-    if builtins.hasAttr zigVersion zigOverlayPkgs then
-      builtins.getAttr zigVersion zigOverlayPkgs
+    if builtins.hasAttr "zig_0_11" pkgs then
+      pkgs.zig_0_11
     else
-      throw "zig-overlay does not provide Zig ${zigVersion} for this system";
+      throw "nixpkgs does not provide Zig ${zigVersion}";
 
   zlsPackages =
     if inputs ? zls && inputs.zls ? packages && builtins.hasAttr pkgs.system inputs.zls.packages then
@@ -73,7 +67,7 @@ in
       })
   ];
 
-  # devenv 1.9's tasks helper requires nightly Cargo; stub it out to avoid the build.
+  # Avoid evaluating the pinned devenv module's bundled tasks helper.
   task.package = pkgs.writeShellScriptBin "devenv-tasks" ''
     exit 0
     '';

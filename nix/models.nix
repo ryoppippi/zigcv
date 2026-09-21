@@ -1,7 +1,7 @@
 { pkgs }:
 let
   caffeModel = pkgs.fetchurl {
-    url = "http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel";
+    url = "https://web.archive.org/web/20250115134433/http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel";
     hash = "sha256-b3EB46IYNzinEloMUCG6gqH+tCKMXKCSTZkbba9vb60=";
   };
 
