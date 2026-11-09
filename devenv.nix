@@ -3,21 +3,14 @@
 let
   zigVersion = "0.11.0";
 
-  zigOverlayPkgs =
-    if builtins.hasAttr pkgs.system inputs."zig-overlay".packages then
-      builtins.getAttr pkgs.system inputs."zig-overlay".packages
-    else
-      throw "zig-overlay does not provide packages for this system";
-
   zigPackage =
-    if builtins.hasAttr zigVersion zigOverlayPkgs then
-      builtins.getAttr zigVersion zigOverlayPkgs
-    else
-      throw "zig-overlay does not provide Zig ${zigVersion} for this system";
+    (import inputs."nixpkgs-zig-0-11" {
+      system = pkgs.stdenv.hostPlatform.system;
+    }).zig_0_11;
 
   zlsPackages =
-    if inputs ? zls && inputs.zls ? packages && builtins.hasAttr pkgs.system inputs.zls.packages then
-      builtins.getAttr pkgs.system inputs.zls.packages
+    if inputs ? zls && inputs.zls ? packages && builtins.hasAttr pkgs.stdenv.hostPlatform.system inputs.zls.packages then
+      builtins.getAttr pkgs.stdenv.hostPlatform.system inputs.zls.packages
     else
       throw "zigtools/zls does not provide packages for this system";
 
@@ -28,7 +21,7 @@ let
 
   opencvPkg =
     (import inputs."nixpkgs-opencv-4-6" {
-      system = pkgs.system;
+      system = pkgs.stdenv.hostPlatform.system;
       config = { allowUnfree = false; };
     }).opencv;
 
@@ -63,20 +56,6 @@ in
   cachix.enable = false;
 
   packages = basePackages;
-
-  overlays = [
-    (final: prev:
-      if prev.stdenv.isDarwin then {
-        apple-sdk = prev.darwin.apple_sdk.sdkRoot;
-        apple-sdk_11 = prev.darwin.apple_sdk_11_0.sdkRoot;
-      } else {
-      })
-  ];
-
-  # devenv 1.9's tasks helper requires nightly Cargo; stub it out to avoid the build.
-  task.package = pkgs.writeShellScriptBin "devenv-tasks" ''
-    exit 0
-    '';
 
   scripts = {
     version.exec = "zig version";
