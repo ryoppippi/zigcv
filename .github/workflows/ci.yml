@@ -22,9 +22,11 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: recursive
-      - uses: cachix/install-nix-action@2126ae7fc54c9df00dd18f7f18754393182c73cd # v31.9.1
+      - uses: nixbuild/nix-quick-install-action@9f63be77f412a248c9d9a65a4c82cf066cdf8f0c # v35
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            max-jobs = auto
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
       - name: Activate shell
@@ -45,9 +47,11 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: recursive
-      - uses: cachix/install-nix-action@2126ae7fc54c9df00dd18f7f18754393182c73cd # v31.9.1
+      - uses: nixbuild/nix-quick-install-action@9f63be77f412a248c9d9a65a4c82cf066cdf8f0c # v35
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            max-jobs = auto
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
       - name: Activate shell
