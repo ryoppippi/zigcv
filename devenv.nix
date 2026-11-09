@@ -4,14 +4,13 @@ let
   zigVersion = "0.11.0";
 
   zigPackage =
-    if builtins.hasAttr "zig_0_11" pkgs then
-      pkgs.zig_0_11
-    else
-      throw "nixpkgs does not provide Zig ${zigVersion}";
+    (import inputs."nixpkgs-zig-0-11" {
+      system = pkgs.stdenv.hostPlatform.system;
+    }).zig_0_11;
 
   zlsPackages =
-    if inputs ? zls && inputs.zls ? packages && builtins.hasAttr pkgs.system inputs.zls.packages then
-      builtins.getAttr pkgs.system inputs.zls.packages
+    if inputs ? zls && inputs.zls ? packages && builtins.hasAttr pkgs.stdenv.hostPlatform.system inputs.zls.packages then
+      builtins.getAttr pkgs.stdenv.hostPlatform.system inputs.zls.packages
     else
       throw "zigtools/zls does not provide packages for this system";
 
@@ -22,7 +21,7 @@ let
 
   opencvPkg =
     (import inputs."nixpkgs-opencv-4-6" {
-      system = pkgs.system;
+      system = pkgs.stdenv.hostPlatform.system;
       config = { allowUnfree = false; };
     }).opencv;
 
@@ -57,20 +56,6 @@ in
   cachix.enable = false;
 
   packages = basePackages;
-
-  overlays = [
-    (final: prev:
-      if prev.stdenv.isDarwin then {
-        apple-sdk = prev.darwin.apple_sdk.sdkRoot;
-        apple-sdk_11 = prev.darwin.apple_sdk_11_0.sdkRoot;
-      } else {
-      })
-  ];
-
-  # Avoid evaluating the pinned devenv module's bundled tasks helper.
-  task.package = pkgs.writeShellScriptBin "devenv-tasks" ''
-    exit 0
-    '';
 
   scripts = {
     version.exec = "zig version";
