@@ -8,6 +8,10 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   fmt:
     strategy:
@@ -22,11 +26,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
-      - uses: nixbuild/nix-quick-install-action@9f63be77f412a248c9d9a65a4c82cf066cdf8f0c # v35
+      - uses: x-ryoppippi/setup-nix@7f7ff26554cbbf09c1ce4f3369ca8fd2120a42d1
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          nix_conf: |
-            max-jobs = auto
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
       - name: Activate shell
@@ -47,11 +49,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
-      - uses: nixbuild/nix-quick-install-action@9f63be77f412a248c9d9a65a4c82cf066cdf8f0c # v35
+      - uses: x-ryoppippi/setup-nix@7f7ff26554cbbf09c1ce4f3369ca8fd2120a42d1
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          nix_conf: |
-            max-jobs = auto
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install devenv
         run: nix profile install --accept-flake-config nixpkgs#devenv
       - name: Activate shell
